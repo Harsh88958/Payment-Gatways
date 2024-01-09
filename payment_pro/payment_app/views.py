@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponse
 from razorpay.errors import BadRequestError
 from django.shortcuts import render
 from rest_framework.views import APIView
@@ -10,11 +10,16 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.db import IntegrityError
 
+
 # Create your views here.
 
 
 def index(request):
     return render(request, "payment.html")
+
+
+def paypage(request):
+    return render(request, "paypage.html")
 
 
 def create(request):
@@ -27,7 +32,7 @@ def create(request):
             print(amount)
         except (TypeError, ValueError):
             print("Please provide a valid amount")
-            return JsonResponse(
+            return HttpResponse(
                 {"message": "Please provide a valid amount"}, status=400
             )
         client = razorpay.Client(auth=(key_id, secret))
@@ -50,8 +55,14 @@ def create(request):
                     currency=payment["currency"],
                     status=payment["status"],
                 )
-                return JsonResponse({"data": payment[id]})
+                datas = {
+                    "payment_id": payment["id"],
+                }
+                print(datas["payment_id"])
+                return render(request, "paypage.html", {"datas": datas})
         except Exception as e:
-            return Response(
+            return HttpResponse(
                 {"message": f"Failed to create payment: {str(e)}"}, status=500
             )
+    else:
+        return HttpResponse("Please provide an amount", status=400)

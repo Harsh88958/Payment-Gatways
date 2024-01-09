@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <div class="modal">
+                <div class="transo1">
+                        <div class="razor" id="rzp-button1">
+                            <p>Pay With</p>
+                            <img src="{% static 'image/razorpay.png' %}"  alt="">
+                        </div>
+                        <div class="phone">
+                            <p>Pay With</p>
+                            <img src="{% static 'image/phone.png' %}"  alt="">
+                        </div>
+                </div>
+            </div>
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var options = {
+    "key": "rzp_test_QOxL4qlbdniQb8", 
+    "name": "Acme Corp",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": "{{datas.payment_id}}", 
+    "callback_url": "http://127.0.0.1:8000/vi/",
+    "prefill": { 
+        "email": "harshjha75412@gmail.com", 
+        "contact": "9718075412"  
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+});
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
+
+</body>
+</html>

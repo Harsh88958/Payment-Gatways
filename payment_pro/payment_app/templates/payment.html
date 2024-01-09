@@ -51,7 +51,7 @@
                 <div class="second">
                     <div class="deal">Deal</div>
                     <div class="price">
-                        <p> <span style="font-weight: 100;">-8% </span><span>₹</span><input type="text" name="amount" placeholder="Enter your amount"></p></div>
+                        <p> <span style="font-weight: 100;">-8% </span><span>₹</span><input id="amountInput" type="text" name="amount" placeholder="Enter your amount"></p></div>
                     <div class="mrp">
                         <p>M.R.P.:<span>₹59,000</span></p>
                     </div>
@@ -141,7 +141,7 @@
                     </div>
                     <div class="buttons">
                         <button class="atc">Add to Cart</button>
-                        <button class="show-modal">Buy Now</button>
+                        <button onclick="buyNow()" class="show-modal">Buy Now</button>
                     </div>
                     <div class="lock">
                         <p class="lock1"><i class="fa-solid fa-lock"></i> <span>&nbsp;&nbsp;<a href="#"
@@ -154,49 +154,26 @@
                     <button>Add to Wishlist</button>
                 </div>
             </div>
-            <div class="modal hidden">
-                <div class="transo1">
-                    <button class="close-modal">&times;</button>
-                        <div class="razor" id="rzp-button1">
-                            <p>Pay With</p>
-                            <img src="{% static 'image/razorpay.png' %}"  alt="">
-                        </div>
-                </div>
-            </div>
+           
         </div>
 
+
+<script>
+        function buyNow() {
+            // Get the value from the input field
+            var amount = document.getElementById('amountInput').value;
+            console.log(amount);
+            
+            // Modify the href attribute with the amount value
+            var buyNowUrl = "{% url 'create_payment' %}?amount=" + encodeURIComponent(amount);
+            console.log(buyNowUrl);
+            
+            // Redirect to the modified URL
+            window.location.href = buyNowUrl;
+        }
+    </script>
 <script src="{% static 'js/script.js' %}"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-var options = {
-    "key": "rzp_test_QOxL4qlbdniQb8", 
-    "name": "Acme Corp",
-    "description": "Test Transaction",
-    "image": "https://example.com/your_logo",
-    "order_id": "ijiji", 
-    "callback_url": "http://127.0.0.1:8000/vi/",
-    "prefill": { 
-        "email": "harshjha75412@gmail.com", 
-        "contact": "9718075412"  
-    },
-    "theme": {
-        "color": "#3399cc"
-    }
-};
-var rzp1 = new Razorpay(options);
-rzp1.on('payment.failed', function (response){
-        alert(response.error.code);
-        alert(response.error.description);
-        alert(response.error.source);
-        alert(response.error.step);
-        alert(response.error.reason);
-        alert(response.error.metadata.order_id);
-        alert(response.error.metadata.payment_id);
-});
-document.getElementById('rzp-button1').onclick = function(e){
-    rzp1.open();
-    e.preventDefault();
-}
 </script>
 </body>
 
